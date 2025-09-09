@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import type { Product } from '../../types';
 import { CATEGORIES } from '../../constants';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 interface ProductImage {
   imageUrl: string;
@@ -11,6 +16,40 @@ interface AddProductProps {
   addProduct: (product: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'images'> & { images?: ProductImage[] }) => Promise<void>;
   showLoading: (show: boolean, message?: string) => void;
 }
+
+const compressImage = (dataUrl: string, maxWidth = 800, maxHeight = 600, quality = 0.7): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        return reject(new Error('Could not get canvas context'));
+      }
+
+      // Calculate new dimensions while maintaining aspect ratio
+      let { width, height } = img;
+      if (width > height) {
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width = (width * maxHeight) / height;
+          height = maxHeight;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = (err) => reject(err);
+    img.src = dataUrl;
+  });
+};
 
 const createThumbnail = (dataUrl: string, width = 200, height = 200): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -24,7 +63,7 @@ const createThumbnail = (dataUrl: string, width = 200, height = 200): Promise<st
         return reject(new Error('Could not get canvas context'));
       }
       ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', 0.8)); // Use JPEG for smaller file size
+      resolve(canvas.toDataURL('image/jpeg', 0.6)); // Lower quality for thumbnail
     };
     img.onerror = (err) => reject(err);
     img.src = dataUrl;
@@ -78,9 +117,10 @@ const AddProduct: React.FC<AddProductProps> = ({ addProduct, showLoading }) => {
     try {
         const processedImages = await Promise.all(
           images.map(async (image) => {
-            const thumbnailUrl = await createThumbnail(image.dataUrl);
+            const compressedImageUrl = await compressImage(image.dataUrl);
+            const thumbnailUrl = await createThumbnail(compressedImageUrl);
             return {
-              imageUrl: image.dataUrl,
+              imageUrl: compressedImageUrl,
               thumbnailUrl,
             };
           })
@@ -112,38 +152,42 @@ const AddProduct: React.FC<AddProductProps> = ({ addProduct, showLoading }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">새 상품 추가</h2>
-      {error && <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">{error}</div>}
+    <Card>
+      <CardHeader>
+        <CardTitle>새 상품 추가</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {error && <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded">{error}</div>}
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">상품명</label>
-            <input 
+            <Label htmlFor="name">상품명</Label>
+            <Input 
+              id="name"
               type="text" 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500"
               placeholder="상품명을 입력하세요"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">가격</label>
-            <input 
+            <Label htmlFor="price">가격</Label>
+            <Input 
+              id="price"
               type="number" 
               value={price} 
               onChange={(e) => setPrice(e.target.value)} 
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500"
               placeholder="가격을 입력하세요"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">카테고리</label>
+            <Label htmlFor="category">카테고리</Label>
             <select 
+              id="category"
               value={category} 
               onChange={(e) => setCategory(e.target.value)} 
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-orange-500"
+              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               {CATEGORIES.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
@@ -151,27 +195,29 @@ const AddProduct: React.FC<AddProductProps> = ({ addProduct, showLoading }) => {
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">상품 설명</label>
-            <textarea 
+            <Label htmlFor="description">상품 설명</Label>
+            <Textarea 
+              id="description"
               value={description} 
               onChange={(e) => setDescription(e.target.value)} 
-              className="w-full px-3 py-2 border rounded-lg h-24 focus:outline-none focus:border-orange-500"
+              className="h-24"
               placeholder="상품 설명을 입력하세요"
-            ></textarea>
+            />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">
+            <Label htmlFor="images">
               상품 이미지 ({images.length}/3)
-            </label>
-            <input 
+            </Label>
+            <Input 
+              id="images"
               type="file" 
               accept="image/*" 
               multiple
               onChange={handleImageChange} 
-              className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+              className="file:text-foreground file:border-0 file:bg-secondary file:text-sm file:font-medium hover:file:bg-secondary/80"
               disabled={images.length >= 3}
             />
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               최대 3장까지 업로드 가능합니다.
             </p>
           </div>
@@ -224,8 +270,9 @@ const AddProduct: React.FC<AddProductProps> = ({ addProduct, showLoading }) => {
             </ul>
           </div>
         </div>
-      </div>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
