@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ADMIN_ID, ADMIN_PW } from '../constants';
+import { ADMIN_ID, ADMIN_PW } from '../../constants';
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;

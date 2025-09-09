@@ -11,6 +11,8 @@ interface ProductDetailProps {
     quantity: number;
     customerName: string;
     customerPhone: string;
+    customerEmail?: string;
+    customerAddress?: string;
   }) => Promise<void>;
   showLoading: (show: boolean, message?: string) => void;
 }

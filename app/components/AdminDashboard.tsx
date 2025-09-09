@@ -1,11 +1,17 @@
 import React, { useState, useMemo } from 'react';
-import type { Product, Order, PaymentStatus, DeliveryStatus } from '../types';
+import type { Product, OrderWithProduct, PaymentStatus, DeliveryStatus } from '../../types';
 import AddProduct from './AddProduct';
 
 interface AdminDashboardProps {
   products: Product[];
-  orders: Order[];
-  addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
+  orders: OrderWithProduct[];
+  addProduct: (product: {
+    name: string
+    price: number
+    description: string
+    category: string
+    images: Array<{ imageUrl: string; thumbnailUrl: string }>
+  }) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   updateOrderStatus: (orderId: string, statusType: 'payment' | 'delivery', newStatus: PaymentStatus | DeliveryStatus) => Promise<void>;
   showLoading: (show: boolean, message?: string) => void;
@@ -28,6 +34,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
   const [activeTab, setActiveTab] = useState('orders');
   const [orderSearchTerm, setOrderSearchTerm] = useState('');
 
+  const getKoreanStatus = (status: string, type: 'payment' | 'delivery') => {
+    if (type === 'payment') {
+      return status === 'COMPLETED' ? '결제 완료' : '결제 대기중';
+    } else {
+      return status === 'COMPLETED' ? '배송 완료' : '배송 준비중';
+    }
+  };
+
+  const getEnglishStatus = (status: string, type: 'payment' | 'delivery') => {
+    if (type === 'payment') {
+      return status === '결제 완료' ? 'COMPLETED' : 'PENDING';
+    } else {
+      return status === '배송 완료' ? 'COMPLETED' : 'PREPARING';
+    }
+  };
+
   const handleDeleteProduct = async (productId: string, productName: string) => {
     if (window.confirm(`'${productName}' 상품을 정말 삭제하시겠습니까?`)) {
       showLoading(true, '상품을 삭제하고 있습니다...');
@@ -47,7 +69,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
     if(window.confirm(`이 주문의 ${typeText} 상태를 '${newStatus}'(으)로 변경하시겠습니까?`)) {
        showLoading(true, '주문 상태를 업데이트하고 있습니다...');
        try {
-        await updateOrderStatus(orderId, statusType, newStatus);
+        const englishStatus = getEnglishStatus(newStatus, statusType);
+        await updateOrderStatus(orderId, statusType, englishStatus as PaymentStatus | DeliveryStatus);
        } catch (error) {
         console.error('Failed to update order status:', error);
         alert('주문 상태 업데이트 중 오류가 발생했습니다.');
@@ -101,7 +124,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                     {products.map(product => (
                     <li key={product.id} className="p-4 flex items-center justify-between space-x-4">
                         <div className="flex items-center space-x-4 flex-1">
-                        <img src={product.thumbnailUrl || product.imageUrl} alt={product.name} className="w-16 h-16 object-cover rounded-md"/>
+                        <img src={product.images?.[0]?.thumbnailUrl || product.images?.[0]?.imageUrl || '/placeholder-image.png'} alt={product.name} className="w-16 h-16 object-cover rounded-md"/>
                         <div className="flex-1">
                             <p className="font-semibold text-gray-900">{product.name}</p>
                             <p className="text-sm text-gray-500">{product.price.toLocaleString()}원</p>
@@ -155,7 +178,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex items-center">
                                         <div className="flex-shrink-0 h-12 w-12">
-                                            <img className="h-12 w-12 rounded-md object-cover" src={order.product.thumbnailUrl || order.product.imageUrl} alt="" />
+                                            <img className="h-12 w-12 rounded-md object-cover" src={order.product.images?.[0]?.thumbnailUrl || order.product.images?.[0]?.imageUrl || '/placeholder-image.png'} alt="" />
                                         </div>
                                         <div className="ml-4">
                                             <div className="text-base font-medium text-gray-900">{order.product.name}</div>
@@ -169,16 +192,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                                     <div className="text-sm text-gray-500">{order.customerPhone}</div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <StatusBadge status={order.paymentStatus} />
-                                    {order.paymentStatus === '결제 대기중' && (
+                                    <StatusBadge status={getKoreanStatus(order.paymentStatus, 'payment') as PaymentStatus} />
+                                    {order.paymentStatus === 'PENDING' && (
                                         <button onClick={() => handleStatusUpdate(order.id, 'payment', '결제 완료')} className="mt-2 ml-1 text-xs bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded">
                                             결제 완료 처리
                                         </button>
                                     )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <StatusBadge status={order.deliveryStatus} />
-                                    {order.deliveryStatus === '배송 준비중' && (
+                                    <StatusBadge status={getKoreanStatus(order.deliveryStatus, 'delivery') as DeliveryStatus} />
+                                    {order.deliveryStatus === 'PREPARING' && (
                                         <button onClick={() => handleStatusUpdate(order.id, 'delivery', '배송 완료')} className="mt-2 ml-1 text-xs bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded">
                                             배송 완료 처리
                                         </button>

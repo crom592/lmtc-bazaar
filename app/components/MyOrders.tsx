@@ -28,7 +28,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({ orders }) => {
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [searched, setSearched] = useState(false);
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<OrderWithProduct[]>([]);
   const [error, setError] = useState('');
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +108,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({ orders }) => {
             <ul className="space-y-6">
               {filteredOrders.map(order => (
                 <li key={order.id} className="bg-white p-6 border rounded-lg shadow-sm flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                  <img src={order.product.thumbnailUrl || order.product.imageUrl} alt={order.product.name} className="w-24 h-24 object-cover rounded-lg flex-shrink-0" />
+                  <img src={order.product.images?.[0]?.thumbnailUrl || order.product.images?.[0]?.imageUrl || '/placeholder-image.png'} alt={order.product.name} className="w-24 h-24 object-cover rounded-lg flex-shrink-0" />
                   <div className="flex-1">
                     <p className="font-bold text-xl text-gray-800">{order.product.name}</p>
                     <p className="text-gray-700 text-lg mt-1">수량: {order.quantity}개</p>

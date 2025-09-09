@@ -4,9 +4,10 @@ import { prisma } from '@/lib/prisma'
 // DELETE /api/products/[id] - 상품 삭제
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const { id } = params
 
     await prisma.product.delete({

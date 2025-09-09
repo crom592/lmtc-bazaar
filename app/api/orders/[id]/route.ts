@@ -5,9 +5,10 @@ import { PaymentStatus, DeliveryStatus } from '@prisma/client'
 // PATCH /api/orders/[id] - 주문 상태 업데이트
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const { id } = params
     const body = await request.json()
     const { paymentStatus, deliveryStatus } = body
