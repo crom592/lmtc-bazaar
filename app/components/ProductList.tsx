@@ -32,21 +32,23 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 
 
   return (
-    <div className="container mx-auto px-6 py-8">
-       <div className="text-center mb-8">
-         <h1 className="text-4xl font-bold text-foreground mb-3">LMTC 4기 선교여행 온라인 바자회</h1>
-         <p className="text-lg text-muted-foreground">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다.</p>
+    <div className="container mx-auto px-4 py-6">
+       <div className="text-center mb-12">
+         <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent mb-4">
+           LMTC 4기 선교여행 온라인 바자회
+         </h1>
+         <p className="text-xl text-slate-600 font-medium">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다 ❤️</p>
        </div>
 
-      <Card className="mb-8">
-        <CardContent className="flex flex-wrap gap-4 justify-center p-6">
-          <div className="flex items-center space-x-2">
-            <Label htmlFor="category-filter" className="font-semibold">카테고리:</Label>
+      <Card className="mb-12 bg-gradient-to-r from-blue-50 to-purple-50 border-0 rounded-2xl shadow-xl">
+        <CardContent className="flex flex-wrap gap-6 justify-center p-8">
+          <div className="flex items-center space-x-3 bg-white rounded-full px-6 py-3 shadow-md">
+            <Label htmlFor="category-filter" className="font-bold text-slate-700 text-lg">🏷️ 카테고리:</Label>
             <select
               id="category-filter"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="border border-input bg-background rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="bg-transparent border-none text-slate-800 font-semibold text-lg focus:outline-none cursor-pointer"
             >
               <option value="all">전체</option>
               {CATEGORIES.map(cat => (
@@ -54,13 +56,13 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
               ))}
             </select>
           </div>
-          <div className="flex items-center space-x-2">
-            <Label htmlFor="price-filter" className="font-semibold">가격:</Label>
+          <div className="flex items-center space-x-3 bg-white rounded-full px-6 py-3 shadow-md">
+            <Label htmlFor="price-filter" className="font-bold text-slate-700 text-lg">💰 가격:</Label>
             <select
               id="price-filter"
               value={selectedPrice}
               onChange={(e) => setSelectedPrice(e.target.value)}
-              className="border border-input bg-background rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="bg-transparent border-none text-slate-800 font-semibold text-lg focus:outline-none cursor-pointer"
             >
               <option value="all">모든 가격</option>
               <option value="under50k">5만원 미만</option>

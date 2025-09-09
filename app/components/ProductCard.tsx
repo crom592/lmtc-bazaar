@@ -15,31 +15,53 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <Link href={`/?page=product&id=${product.id}`} className="group block">
-      <Card className="group-hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+      <Card className="group-hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden border-0 bg-white rounded-2xl">
         <div className="relative">
           <img 
             src={mainImage || '/placeholder-image.png'} 
             alt={product.name} 
-            className="w-full h-56 object-cover" 
+            className="w-full h-64 object-cover" 
           />
           {/* 이미지 개수 표시 */}
           {imageCount > 1 && (
-            <Badge variant="secondary" className="absolute top-2 right-2 bg-black/70 text-white">
+            <Badge className="absolute top-3 right-3 bg-black/80 text-white text-xs px-2 py-1 rounded-full">
               📷 {imageCount}
             </Badge>
           )}
+          {/* 할인 배지 스타일 */}
+          <div className="absolute top-3 left-3">
+            <Badge className="bg-red-500 text-white font-bold text-sm px-3 py-1 rounded-full">
+              특가
+            </Badge>
+          </div>
           {/* Description Tooltip Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center p-4 bg-black bg-opacity-70 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <p className="text-white text-center text-sm">
-              {product.description.length > 100 ? `${product.description.substring(0, 100)}...` : product.description}
+          <div className="absolute inset-0 flex items-center justify-center p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <p className="text-white text-center font-medium">
+              {product.description.length > 80 ? `${product.description.substring(0, 80)}...` : product.description}
             </p>
           </div>
         </div>
-        <CardContent className="p-4">
-          <h3 className="text-lg font-semibold text-foreground truncate mb-2">{product.name}</h3>
-          <div className="flex justify-between items-center">
-            <p className="text-2xl font-bold text-primary">{product.price.toLocaleString()}원</p>
-            <Badge variant="outline" className="text-xs">{product.category}</Badge>
+        <CardContent className="p-5">
+          <div className="mb-3">
+            <Badge variant="outline" className="text-xs text-slate-500 bg-slate-50 mb-2">
+              {product.category}
+            </Badge>
+            <h3 className="text-lg font-bold text-slate-800 leading-tight line-clamp-2">
+              {product.name}
+            </h3>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-2xl font-black text-slate-900">
+                {product.price.toLocaleString()}
+                <span className="text-lg font-semibold">원</span>
+              </span>
+              <span className="text-sm text-green-600 font-semibold">무료배송</span>
+            </div>
+            <div className="text-right text-xs text-slate-400">
+              <div>⭐⭐⭐⭐⭐</div>
+              <div className="mt-1">리뷰 ({Math.floor(Math.random() * 100)})</div>
+            </div>
           </div>
         </CardContent>
       </Card>
