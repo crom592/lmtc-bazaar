@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
     isAdmin: boolean;
@@ -8,18 +9,24 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ isAdmin, onLogout }) => {
   return (
-    <header className="bg-white shadow-md sticky top-0 z-40">
+    <header className="bg-card shadow-md sticky top-0 z-40 border-b">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold text-orange-600 hover:text-orange-700 transition">
+        <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/80 transition">
           💒 LMTC4기 선교 바자회
         </Link>
-        <nav className="space-x-6 text-gray-700 font-medium">
-          <Link href="/" className="hover:text-orange-600 transition">홈</Link>
-          <Link href="/?page=my-orders" className="hover:text-orange-600 transition">신청내역 확인</Link>
+        <nav className="flex items-center space-x-4">
+          <Button variant="ghost" asChild>
+            <Link href="/">홈</Link>
+          </Button>
+          <Button variant="ghost" asChild>
+            <Link href="/?page=my-orders">신청내역 확인</Link>
+          </Button>
           {isAdmin ? (
-            <button onClick={onLogout} className="hover:text-orange-600 transition">로그아웃</button>
+            <Button variant="outline" onClick={onLogout}>로그아웃</Button>
           ) : (
-            <Link href="/?page=admin" className="hover:text-orange-600 transition">관리자</Link>
+            <Button variant="default" asChild>
+              <Link href="/?page=admin">관리자</Link>
+            </Button>
           )}
         </nav>
       </div>

@@ -36,8 +36,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         </div>
         <CardContent className="p-4">
-          <h3 className="text-lg font-semibold truncate">{product.name}</h3>
-          <p className="text-xl font-bold text-primary mt-2">{product.price.toLocaleString()}원</p>
+          <h3 className="text-lg font-semibold text-foreground truncate mb-2">{product.name}</h3>
+          <div className="flex justify-between items-center">
+            <p className="text-2xl font-bold text-primary">{product.price.toLocaleString()}원</p>
+            <Badge variant="outline" className="text-xs">{product.category}</Badge>
+          </div>
         </CardContent>
       </Card>
     </Link>

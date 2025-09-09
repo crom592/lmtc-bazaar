@@ -33,8 +33,10 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 
   return (
     <div className="container mx-auto px-6 py-8">
-       <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">LMTC 4기 선교여행 온라인 바자회</h1>
-       <p className="text-center text-gray-600 mb-8">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다.</p>
+       <div className="text-center mb-8">
+         <h1 className="text-4xl font-bold text-foreground mb-3">LMTC 4기 선교여행 온라인 바자회</h1>
+         <p className="text-lg text-muted-foreground">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다.</p>
+       </div>
 
       <Card className="mb-8">
         <CardContent className="flex flex-wrap gap-4 justify-center p-6">
