@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import type { Order, PaymentStatus, DeliveryStatus } from '../types';
+import type { OrderWithProduct, PaymentStatus, DeliveryStatus, PaymentStatusReverseMap, DeliveryStatusReverseMap } from '../../types';
 
 interface MyOrdersProps {
-  orders: Order[];
+  orders: OrderWithProduct[];
 }
 
 const StatusBadge: React.FC<{ status: PaymentStatus | DeliveryStatus }> = ({ status }) => {
@@ -18,6 +18,13 @@ const StatusBadge: React.FC<{ status: PaymentStatus | DeliveryStatus }> = ({ sta
 };
 
 const MyOrders: React.FC<MyOrdersProps> = ({ orders }) => {
+  const getKoreanStatus = (status: string, type: 'payment' | 'delivery') => {
+    if (type === 'payment') {
+      return status === 'COMPLETED' ? '결제 완료' : '결제 대기중';
+    } else {
+      return status === 'COMPLETED' ? '배송 완료' : '배송 준비중';
+    }
+  };
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [searched, setSearched] = useState(false);
@@ -109,8 +116,8 @@ const MyOrders: React.FC<MyOrdersProps> = ({ orders }) => {
                     <p className="text-sm text-gray-500 mt-2">신청일: {new Date(order.orderDate).toLocaleString('ko-KR')}</p>
                   </div>
                   <div className="flex flex-col items-start sm:items-end space-y-2 self-stretch sm:self-center">
-                      <StatusBadge status={order.paymentStatus} />
-                      <StatusBadge status={order.deliveryStatus} />
+                      <StatusBadge status={getKoreanStatus(order.paymentStatus, 'payment') as PaymentStatus} />
+                      <StatusBadge status={getKoreanStatus(order.deliveryStatus, 'delivery') as DeliveryStatus} />
                   </div>
                 </li>
               ))}

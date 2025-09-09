@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import type { Product } from '../types';
+import type { Product } from '../../types';
 import ProductCard from './ProductCard';
-import { CATEGORIES } from '../constants';
+import { CATEGORIES } from '../../constants';
 
 interface ProductListProps {
   products: Product[];

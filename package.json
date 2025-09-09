@@ -2,21 +2,34 @@
   "name": "성광교회-lmtc4기-바자회",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "react-router-dom": "^7.8.2",
     "@google/genai": "^1.17.0",
+    "@prisma/client": "^6.15.0",
+    "@tailwindcss/forms": "^0.5.10",
+    "autoprefixer": "^10.4.21",
+    "dexie": "4.0.7",
+    "next": "^15.5.2",
+    "postcss": "^8.5.6",
+    "prisma": "^6.15.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "dexie": "4.0.7"
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
+    "tsx": "^4.20.5",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }

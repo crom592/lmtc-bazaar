@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id           String  @id @default(cuid())
+  name         String
+  price        Int
+  description  String
+  category     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  images       ProductImage[]
+  orders       Order[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id          String  @id @default(cuid())
+  productId   String
+  imageUrl    String
+  thumbnailUrl String?
+  order       Int     // 이미지 순서 (1, 2, 3)
+  createdAt   DateTime @default(now())
+
+  product     Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String   @unique
+  email       String?
+  address     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  orders      Order[]
+
+  @@map("customers")
+}
+
+model Order {
+  id             String        @id @default(cuid())
+  productId      String
+  customerId     String
+  quantity       Int
+  customerName   String        // 호환성을 위해 유지
+  customerPhone  String        // 호환성을 위해 유지
+  orderDate      DateTime      @default(now())
+  paymentStatus  PaymentStatus @default(PENDING)
+  deliveryStatus DeliveryStatus @default(PREPARING)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  product        Product       @relation(fields: [productId], references: [id])
+  customer       Customer      @relation(fields: [customerId], references: [id])
+
+  @@map("orders")
+}
+
+enum PaymentStatus {
+  PENDING    // 결제 대기중
+  COMPLETED  // 결제 완료
+}
+
+enum DeliveryStatus {
+  PREPARING  // 배송 준비중
+  COMPLETED  // 배송 완료
+}
