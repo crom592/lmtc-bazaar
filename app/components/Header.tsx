@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({ isAdmin, onLogout }) => {
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50 border-b-4 border-blue-500">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="text-3xl font-black text-slate-800 hover:text-blue-600 transition-colors duration-300">
+        <Link href="/" className="text-lg sm:text-2xl lg:text-3xl font-black text-slate-800 hover:text-blue-600 transition-colors duration-300">
           LMTC4기 선교 바자회
         </Link>
         <nav className="flex items-center space-x-2">

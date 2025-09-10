@@ -4,7 +4,7 @@ import ProductCard from './ProductCard';
 import { CATEGORIES } from '../../constants';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Tag, DollarSign } from 'lucide-react';
+import { Tag, CircleDollarSign } from 'lucide-react';
 
 interface ProductListProps {
   products: Product[];
@@ -34,11 +34,11 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-       <div className="text-center mb-12">
-         <h1 className="text-5xl md:text-6xl font-black text-slate-800 mb-4">
+       <div className="text-center mb-8 sm:mb-12">
+         <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-800 mb-2 sm:mb-4">
            LMTC 4기 단기선교 온라인 바자회
          </h1>
-         <p className="text-xl text-slate-600 font-medium">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다 ❤️</p>
+         <p className="text-sm sm:text-lg md:text-xl text-slate-600 font-medium px-4">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다 ❤️</p>
        </div>
 
       <Card className="mb-8 bg-white border border-gray-200 rounded-xl shadow-sm">
@@ -58,7 +58,7 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
             </select>
           </div>
           <div className="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2 border">
-            <DollarSign size={16} className="text-slate-600" />
+            <CircleDollarSign size={16} className="text-slate-600" />
             <select
               id="price-filter"
               value={selectedPrice}
