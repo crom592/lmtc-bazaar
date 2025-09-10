@@ -13,17 +13,14 @@ const Header: React.FC<HeaderProps> = ({ isAdmin, onLogout }) => {
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50 border-b-4 border-blue-500">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-300">
+        <Link href="/" className="hover:opacity-80 transition-opacity duration-300">
           <Image
             src="/church-logo.png"
-            alt="성광교회 로고"
+            alt="LMTC4기 선교 바자회"
             width={40}
             height={40}
             className="sm:w-12 sm:h-12"
           />
-          <span className="text-lg sm:text-2xl lg:text-3xl font-black text-slate-800">
-            LMTC4기 선교 바자회
-          </span>
         </Link>
         <nav className="flex items-center space-x-2">
           <Button variant="ghost" asChild className="text-slate-700 hover:text-blue-600 hover:bg-blue-50 font-semibold">
