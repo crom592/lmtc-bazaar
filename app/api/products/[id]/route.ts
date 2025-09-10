@@ -20,6 +20,25 @@ export async function PUT(
       )
     }
 
+    // 기존 이미지 삭제
+    await prisma.productImage.deleteMany({
+      where: { productId: id },
+    })
+
+    // 새 이미지 추가
+    const imageData = images?.map((img: any, index: number) => ({
+      productId: id,
+      imageUrl: img.imageUrl,
+      thumbnailUrl: img.thumbnailUrl,
+      order: index + 1,
+    })) || []
+
+    if (imageData.length > 0) {
+      await prisma.productImage.createMany({
+        data: imageData,
+      })
+    }
+
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
@@ -27,8 +46,12 @@ export async function PUT(
         price: parseInt(price),
         description,
         category,
-        images: images || [],
       },
+      include: {
+        images: {
+          orderBy: { order: 'asc' }
+        }
+      }
     })
 
     return NextResponse.json(updatedProduct)

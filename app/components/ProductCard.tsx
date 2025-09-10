@@ -17,14 +17,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <Link href={`/?page=product&id=${product.id}`} className="group block">
       <Card className="group-hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden border-0 bg-white rounded-2xl">
-        <div className="relative h-80 overflow-hidden">
+        <div className="relative h-64 overflow-hidden">
           <Image 
             src={mainImage || '/placeholder-image.png'} 
             alt={product.name} 
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            quality={90}
+            className="object-contain transition-transform duration-500 group-hover:scale-105"
+            quality={95}
+            priority={false}
           />
           {/* 이미지 개수 표시 */}
           {imageCount > 1 && (

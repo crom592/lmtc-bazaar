@@ -242,7 +242,7 @@ export default function PageContent() {
   return (
     <div className="min-h-screen">
       <Header isAdmin={isAdmin} onLogout={handleLogout} />
-      <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 min-h-screen">
+      <div className="bg-gray-50 min-h-screen">
         {renderPage()}
       </div>
       {isLoading && <LoadingSpinner message={loadingMessage} />}

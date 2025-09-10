@@ -34,21 +34,21 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
   return (
     <div className="container mx-auto px-4 py-6">
        <div className="text-center mb-12">
-         <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent mb-4">
+         <h1 className="text-5xl md:text-6xl font-black text-slate-800 mb-4">
            LMTC 4기 선교여행 온라인 바자회
          </h1>
          <p className="text-xl text-slate-600 font-medium">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다 ❤️</p>
        </div>
 
-      <Card className="mb-12 bg-gradient-to-r from-blue-50 to-purple-50 border-0 rounded-2xl shadow-xl">
+      <Card className="mb-12 bg-white border border-gray-200 rounded-xl shadow-sm">
         <CardContent className="flex flex-wrap gap-6 justify-center p-8">
-          <div className="flex items-center space-x-3 bg-white rounded-full px-6 py-3 shadow-md">
-            <Label htmlFor="category-filter" className="font-bold text-slate-700 text-lg">🏷️ 카테고리:</Label>
+          <div className="flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-3 border">
+            <Label htmlFor="category-filter" className="font-semibold text-slate-700">🏷️ 카테고리:</Label>
             <select
               id="category-filter"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-transparent border-none text-slate-800 font-semibold text-lg focus:outline-none cursor-pointer"
+              className="bg-transparent border-none text-slate-800 font-semibold focus:outline-none cursor-pointer"
             >
               <option value="all">전체</option>
               {CATEGORIES.map(cat => (
@@ -56,13 +56,13 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
               ))}
             </select>
           </div>
-          <div className="flex items-center space-x-3 bg-white rounded-full px-6 py-3 shadow-md">
-            <Label htmlFor="price-filter" className="font-bold text-slate-700 text-lg">💰 가격:</Label>
+          <div className="flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-3 border">
+            <Label htmlFor="price-filter" className="font-semibold text-slate-700">💰 가격:</Label>
             <select
               id="price-filter"
               value={selectedPrice}
               onChange={(e) => setSelectedPrice(e.target.value)}
-              className="bg-transparent border-none text-slate-800 font-semibold text-lg focus:outline-none cursor-pointer"
+              className="bg-transparent border-none text-slate-800 font-semibold focus:outline-none cursor-pointer"
             >
               <option value="all">모든 가격</option>
               <option value="under50k">5만원 미만</option>

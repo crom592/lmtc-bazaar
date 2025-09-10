@@ -30,6 +30,7 @@ const EditProduct: React.FC<EditProductProps> = ({ product, updateProduct, onCan
   const [category, setCategory] = useState(product.category);
   const [images, setImages] = useState<ImageInput[]>(product.images || []);
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleAddImage = () => {
     if (newImageUrl.trim()) {
@@ -38,6 +39,55 @@ const EditProduct: React.FC<EditProductProps> = ({ product, updateProduct, onCan
         thumbnailUrl: newImageUrl.trim()
       }]);
       setNewImageUrl('');
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploading(true);
+    
+    try {
+      for (const file of Array.from(files)) {
+        if (file.size > 5 * 1024 * 1024) { // 5MB 제한
+          alert(`${file.name}은 파일 크기가 5MB를 초과합니다.`);
+          continue;
+        }
+
+        // 파일을 Base64로 변환
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const base64 = event.target?.result as string;
+          const base64Data = base64.split(',')[1]; // data:image/jpeg;base64, 부분 제거
+
+          try {
+            const response = await fetch('/api/upload', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                image: base64Data,
+                filename: file.name,
+              }),
+            });
+
+            if (response.ok) {
+              const { imageUrl, thumbnailUrl } = await response.json();
+              setImages(prev => [...prev, { imageUrl, thumbnailUrl }]);
+            } else {
+              alert('이미지 업로드에 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('업로드 오류:', error);
+            alert('이미지 업로드 중 오류가 발생했습니다.');
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -150,16 +200,34 @@ const EditProduct: React.FC<EditProductProps> = ({ product, updateProduct, onCan
             <div>
               <Label className="text-sm font-medium text-gray-700">상품 이미지 *</Label>
               <div className="mt-2 space-y-3">
+                {/* 파일 업로드 */}
+                <div className="flex gap-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileUpload}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                    disabled={isUploading}
+                  />
+                  {isUploading && (
+                    <div className="flex items-center px-3">
+                      <span className="text-sm text-gray-500">업로드 중...</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* URL 직접 입력 (기존 기능 유지) */}
                 <div className="flex gap-2">
                   <input
                     type="url"
                     value={newImageUrl}
                     onChange={(e) => setNewImageUrl(e.target.value)}
-                    placeholder="이미지 URL을 입력하세요"
+                    placeholder="또는 이미지 URL을 직접 입력하세요"
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500"
                   />
                   <Button type="button" onClick={handleAddImage} className="bg-green-600 hover:bg-green-700">
-                    추가
+                    URL 추가
                   </Button>
                 </div>
 
