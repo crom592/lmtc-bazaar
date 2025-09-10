@@ -17,9 +17,9 @@ const Header: React.FC<HeaderProps> = ({ isAdmin, onLogout }) => {
           <Image
             src="/church-logo.png"
             alt="LMTC4기 선교 바자회"
-            width={60}
+            width={120}
             height={60}
-            className="sm:w-16 sm:h-16 lg:w-20 lg:h-20"
+            className="h-12 w-auto sm:h-14 lg:h-16"
           />
         </Link>
         <nav className="flex items-center space-x-2">
