@@ -35,7 +35,7 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
     <div className="container mx-auto px-4 py-6">
        <div className="text-center mb-12">
          <h1 className="text-5xl md:text-6xl font-black text-slate-800 mb-4">
-           LMTC 4기 선교여행 온라인 바자회
+           LMTC 4기 단기선교 온라인 바자회
          </h1>
          <p className="text-xl text-slate-600 font-medium">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다 ❤️</p>
        </div>
