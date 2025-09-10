@@ -40,29 +40,29 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
          <p className="text-xl text-slate-600 font-medium">여러분의 따뜻한 마음이 선교지에 큰 힘이 됩니다 ❤️</p>
        </div>
 
-      <Card className="mb-12 bg-white border border-gray-200 rounded-xl shadow-sm">
-        <CardContent className="flex flex-wrap gap-6 justify-center p-8">
-          <div className="flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-3 border">
-            <Label htmlFor="category-filter" className="font-semibold text-slate-700">🏷️ 카테고리:</Label>
+      <Card className="mb-8 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <CardContent className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center p-4 sm:p-6">
+          <div className="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2 border">
+            <Label htmlFor="category-filter" className="font-medium text-slate-700 text-sm">🏷️</Label>
             <select
               id="category-filter"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-transparent border-none text-slate-800 font-semibold focus:outline-none cursor-pointer"
+              className="bg-transparent border-none text-slate-800 font-medium text-sm focus:outline-none cursor-pointer min-w-0 flex-1"
             >
-              <option value="all">전체</option>
+              <option value="all">전체 카테고리</option>
               {CATEGORIES.map(cat => (
                 <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
           </div>
-          <div className="flex items-center space-x-3 bg-gray-50 rounded-lg px-4 py-3 border">
-            <Label htmlFor="price-filter" className="font-semibold text-slate-700">💰 가격:</Label>
+          <div className="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2 border">
+            <Label htmlFor="price-filter" className="font-medium text-slate-700 text-sm">💰</Label>
             <select
               id="price-filter"
               value={selectedPrice}
               onChange={(e) => setSelectedPrice(e.target.value)}
-              className="bg-transparent border-none text-slate-800 font-semibold focus:outline-none cursor-pointer"
+              className="bg-transparent border-none text-slate-800 font-medium text-sm focus:outline-none cursor-pointer min-w-0 flex-1"
             >
               <option value="all">모든 가격</option>
               <option value="under50k">5만원 미만</option>
