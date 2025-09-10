@@ -4,6 +4,7 @@ import ProductCard from './ProductCard';
 import { CATEGORIES } from '../../constants';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Tag, DollarSign } from 'lucide-react';
 
 interface ProductListProps {
   products: Product[];
@@ -43,7 +44,7 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
       <Card className="mb-8 bg-white border border-gray-200 rounded-xl shadow-sm">
         <CardContent className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center p-4 sm:p-6">
           <div className="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2 border">
-            <Label htmlFor="category-filter" className="font-medium text-slate-700 text-sm">🏷️</Label>
+            <Tag size={16} className="text-slate-600" />
             <select
               id="category-filter"
               value={selectedCategory}
@@ -57,7 +58,7 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
             </select>
           </div>
           <div className="flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2 border">
-            <Label htmlFor="price-filter" className="font-medium text-slate-700 text-sm">💰</Label>
+            <DollarSign size={16} className="text-slate-600" />
             <select
               id="price-filter"
               value={selectedPrice}

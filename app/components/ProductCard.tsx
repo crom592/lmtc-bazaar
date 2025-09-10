@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { Product } from '../../types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Camera, Star } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -29,8 +30,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           />
           {/* 이미지 개수 표시 */}
           {imageCount > 1 && (
-            <Badge className="absolute top-3 right-3 bg-black/80 text-white text-xs px-2 py-1 rounded-full">
-              📷 {imageCount}
+            <Badge className="absolute top-3 right-3 bg-black/80 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+              <Camera size={12} />
+              {imageCount}
             </Badge>
           )}
           {/* 할인 배지 스타일 */}
@@ -40,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </Badge>
           </div>
           {/* Description Tooltip Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center p-6 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="absolute inset-0 flex items-center justify-center p-6 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
             <p className="text-white text-center font-medium">
               {product.description.length > 80 ? `${product.description.substring(0, 80)}...` : product.description}
             </p>
@@ -63,7 +65,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </span>
             </div>
             <div className="text-right text-xs text-slate-400">
-              <div>⭐⭐⭐⭐⭐</div>
+              <div className="flex items-center justify-end">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
               <div className="mt-1">리뷰 ({Math.floor(Math.random() * 100)})</div>
             </div>
           </div>
