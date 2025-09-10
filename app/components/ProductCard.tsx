@@ -61,7 +61,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {product.price.toLocaleString()}
                 <span className="text-lg font-semibold">원</span>
               </span>
-              <span className="text-sm text-green-600 font-semibold">무료배송</span>
             </div>
             <div className="text-right text-xs text-slate-400">
               <div>⭐⭐⭐⭐⭐</div>
