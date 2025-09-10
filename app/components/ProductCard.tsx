@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Product } from '../../types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,11 +17,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <Link href={`/?page=product&id=${product.id}`} className="group block">
       <Card className="group-hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden border-0 bg-white rounded-2xl">
-        <div className="relative">
-          <img 
+        <div className="relative h-80 overflow-hidden">
+          <Image 
             src={mainImage || '/placeholder-image.png'} 
             alt={product.name} 
-            className="w-full h-64 object-cover" 
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            quality={90}
           />
           {/* 이미지 개수 표시 */}
           {imageCount > 1 && (

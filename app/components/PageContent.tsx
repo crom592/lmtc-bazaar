@@ -86,6 +86,30 @@ export default function PageContent() {
     }
   }
 
+  const updateProduct = async (productId: string, productData: {
+    name: string
+    price: number
+    description: string
+    category: string
+    images: Array<{ imageUrl: string; thumbnailUrl: string }>
+  }) => {
+    try {
+      const response = await fetch(`/api/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData),
+      })
+
+      if (!response.ok) throw new Error('상품 수정 실패')
+
+      const updatedProduct = await response.json()
+      setProducts(prev => prev.map(p => p.id === productId ? updatedProduct : p))
+    } catch (error) {
+      console.error('상품 수정 오류:', error)
+      throw error
+    }
+  }
+
   const deleteProduct = async (productId: string) => {
     try {
       const response = await fetch(`/api/products/${productId}`, {
@@ -173,6 +197,7 @@ export default function PageContent() {
           products={products}
           orders={orders}
           addProduct={addProduct}
+          updateProduct={updateProduct}
           deleteProduct={deleteProduct}
           updateOrderStatus={updateOrderStatus}
           showLoading={showLoading}
@@ -188,6 +213,7 @@ export default function PageContent() {
           products={products}
           orders={orders}
           addProduct={addProduct}
+          updateProduct={updateProduct}
           deleteProduct={deleteProduct}
           updateOrderStatus={updateOrderStatus}
           showLoading={showLoading}

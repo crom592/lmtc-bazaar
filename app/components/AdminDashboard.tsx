@@ -1,11 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import type { Product, OrderWithProduct, PaymentStatus, DeliveryStatus } from '../../types';
 import AddProduct from './AddProduct';
+import EditProduct from './EditProduct';
 
 interface AdminDashboardProps {
   products: Product[];
   orders: OrderWithProduct[];
   addProduct: (product: {
+    name: string
+    price: number
+    description: string
+    category: string
+    images: Array<{ imageUrl: string; thumbnailUrl: string }>
+  }) => Promise<void>;
+  updateProduct: (productId: string, product: {
     name: string
     price: number
     description: string
@@ -30,9 +38,10 @@ const StatusBadge: React.FC<{ status: PaymentStatus | DeliveryStatus }> = ({ sta
 };
 
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addProduct, deleteProduct, updateOrderStatus, showLoading }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addProduct, updateProduct, deleteProduct, updateOrderStatus, showLoading }) => {
   const [activeTab, setActiveTab] = useState('orders');
   const [orderSearchTerm, setOrderSearchTerm] = useState('');
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const getKoreanStatus = (status: string, type: 'payment' | 'delivery') => {
     if (type === 'payment') {
@@ -95,6 +104,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">관리자 대시보드</h2>
       
+      {editingProduct && (
+        <EditProduct
+          product={editingProduct}
+          updateProduct={updateProduct}
+          onCancel={() => setEditingProduct(null)}
+          showLoading={showLoading}
+        />
+      )}
+      
       <div className="mb-6 border-b border-gray-200">
         <nav className="-mb-px flex space-x-6" aria-label="Tabs">
           <button
@@ -134,6 +152,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                         <span className="px-2 py-1 text-xs font-semibold text-indigo-800 bg-indigo-100 rounded-full">
                             {product.category}
                         </span>
+                        <button
+                            onClick={() => setEditingProduct(product)}
+                            className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                            aria-label={`'${product.name}' 상품 수정`}
+                        >
+                            수정
+                        </button>
                         <button
                             onClick={() => handleDeleteProduct(product.id, product.name)}
                             className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
