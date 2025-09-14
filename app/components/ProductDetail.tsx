@@ -245,6 +245,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, productId, addO
                     <p className="text-gray-500 text-sm mt-1">주소를 입력하시면 배송 시 참고하겠습니다.</p>
                 </div>
 
+                {/* 입금 계좌 정보 */}
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 className="text-lg font-semibold text-blue-800 mb-2">💳 입금 계좌 안내</h3>
+                    <div className="text-blue-700">
+                        <p className="font-medium">토스뱅크 1000-2682-2721</p>
+                        <p className="text-sm">예금주: 신현숙</p>
+                        <p className="text-xs text-blue-600 mt-1">신청 후 위 계좌로 입금해주시면 됩니다.</p>
+                    </div>
+                </div>
+
                 <button type="submit" className="w-full bg-orange-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-orange-700 transition-all duration-300 text-lg">
                     신청하기
                 </button>

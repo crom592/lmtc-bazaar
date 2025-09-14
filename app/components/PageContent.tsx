@@ -11,6 +11,7 @@ import AdminLogin from './AdminLogin'
 import AdminDashboard from './AdminDashboard'
 import MyOrders from './MyOrders'
 import LoadingSpinner from './LoadingSpinner'
+import Footer from './Footer'
 
 export default function PageContent() {
   const router = useRouter()
@@ -242,9 +243,10 @@ export default function PageContent() {
   return (
     <div className="min-h-screen">
       <Header isAdmin={isAdmin} onLogout={handleLogout} />
-      <div className="bg-gray-50 min-h-screen">
+      <div className="bg-gray-50">
         {renderPage()}
       </div>
+      <Footer />
       {isLoading && <LoadingSpinner message={loadingMessage} />}
     </div>
   )
