@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
     }
 
     // deliveryAddress 필드가 스키마에 있는지 확인하고 조건부로 추가
-    const orderData = {
+    const orderData: any = {
       productId,
       customerId: customer.id,
       quantity: parseInt(quantity),
