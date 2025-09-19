@@ -18,11 +18,18 @@ export async function GET() {
       orderBy: { orderDate: 'desc' }
     })
 
-    return NextResponse.json(orders)
+    // deliveryAddress 필드가 없는 기존 데이터를 위한 호환성 처리
+    const ordersWithDeliveryAddress = orders.map(order => ({
+      ...order,
+      deliveryAddress: order.deliveryAddress || null
+    }))
+
+    return NextResponse.json(ordersWithDeliveryAddress)
   } catch (error) {
     console.error('주문 조회 오류:', error)
+    console.error('Error details:', error.message)
     return NextResponse.json(
-      { error: '주문을 불러오는데 실패했습니다.' },
+      { error: '주문을 불러오는데 실패했습니다.', details: error.message },
       { status: 500 }
     )
   }
