@@ -27,6 +27,23 @@ export async function GET() {
     return NextResponse.json(ordersWithDeliveryAddress)
   } catch (error) {
     console.error('주문 조회 오류:', error)
+
+    // 데이터베이스 연결 오류 체크
+    if (error.message?.includes('Environment variable not found: DATABASE_URL')) {
+      return NextResponse.json(
+        { error: '데이터베이스 설정이 필요합니다. .env.local 파일에 DATABASE_URL을 설정해주세요.' },
+        { status: 500 }
+      )
+    }
+
+    // 스키마 오류 체크
+    if (error.message?.includes('Unknown column') || error.message?.includes('deliveryAddress')) {
+      return NextResponse.json(
+        { error: '데이터베이스 스키마를 업데이트해주세요. npx prisma db push 명령을 실행하세요.' },
+        { status: 500 }
+      )
+    }
+
     console.error('Error details:', error.message)
     return NextResponse.json(
       { error: '주문을 불러오는데 실패했습니다.', details: error.message },
