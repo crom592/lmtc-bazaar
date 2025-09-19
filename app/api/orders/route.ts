@@ -19,10 +19,16 @@ export async function GET() {
     })
 
     // deliveryAddress 필드가 없는 기존 데이터를 위한 호환성 처리
-    const ordersWithDeliveryAddress = orders.map(order => ({
-      ...order,
-      deliveryAddress: order.deliveryAddress || null
-    }))
+    const ordersWithDeliveryAddress = orders.map(order => {
+      const orderObj = { ...order }
+
+      // deliveryAddress 필드가 존재하지 않으면 null로 설정
+      if (!orderObj.hasOwnProperty('deliveryAddress')) {
+        orderObj.deliveryAddress = null
+      }
+
+      return orderObj
+    })
 
     return NextResponse.json(ordersWithDeliveryAddress)
   } catch (error) {
@@ -110,15 +116,30 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // deliveryAddress 필드가 스키마에 있는지 확인하고 조건부로 추가
+    const orderData = {
+      productId,
+      customerId: customer.id,
+      quantity: parseInt(quantity),
+      customerName, // 호환성을 위해 유지
+      customerPhone, // 호환성을 위해 유지
+    }
+
+    // deliveryAddress 필드가 스키마에 있다면 추가
+    try {
+      // deliveryAddress 필드가 있는지 테스트
+      await prisma.order.findFirst({
+        select: { deliveryAddress: true },
+        take: 0
+      })
+      // 성공하면 deliveryAddress 필드가 존재함
+      orderData.deliveryAddress = customerAddress
+    } catch (schemaError) {
+      console.warn('deliveryAddress 필드가 스키마에 없음, 제외함')
+    }
+
     const order = await prisma.order.create({
-      data: {
-        productId,
-        customerId: customer.id,
-        quantity: parseInt(quantity),
-        customerName, // 호환성을 위해 유지
-        customerPhone, // 호환성을 위해 유지
-        deliveryAddress: customerAddress, // 배송 주소 저장
-      },
+      data: orderData,
       include: {
         product: {
           include: {

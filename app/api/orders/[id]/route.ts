@@ -27,8 +27,19 @@ export async function PATCH(
       updateData.quantity = parseInt(quantity)
     }
 
+    // deliveryAddress 필드가 스키마에 있는지 확인하고 조건부로 추가
     if (deliveryAddress !== undefined) {
-      updateData.deliveryAddress = deliveryAddress
+      try {
+        // deliveryAddress 필드가 있는지 테스트
+        await prisma.order.findFirst({
+          select: { deliveryAddress: true },
+          take: 0
+        })
+        // 성공하면 deliveryAddress 필드가 존재함
+        updateData.deliveryAddress = deliveryAddress
+      } catch (schemaError) {
+        console.warn('deliveryAddress 필드가 스키마에 없음, 업데이트에서 제외함')
+      }
     }
 
     if (customerName) {
