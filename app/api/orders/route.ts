@@ -116,26 +116,14 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // deliveryAddress 필드가 스키마에 있는지 확인하고 조건부로 추가
+    // 주문 데이터 구성
     const orderData: any = {
       productId,
       customerId: customer.id,
       quantity: parseInt(quantity),
       customerName, // 호환성을 위해 유지
       customerPhone, // 호환성을 위해 유지
-    }
-
-    // deliveryAddress 필드가 스키마에 있다면 추가
-    try {
-      // deliveryAddress 필드가 있는지 테스트
-      await prisma.order.findFirst({
-        select: { deliveryAddress: true },
-        take: 0
-      })
-      // 성공하면 deliveryAddress 필드가 존재함
-      orderData.deliveryAddress = customerAddress
-    } catch (schemaError) {
-      console.warn('deliveryAddress 필드가 스키마에 없음, 제외함')
+      deliveryAddress: customerAddress, // 배송 주소
     }
 
     const order = await prisma.order.create({
