@@ -273,8 +273,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                                     <div className="text-sm">
                                         {order.deliveryAddress ? (
                                             <span className="text-gray-700">{order.deliveryAddress}</span>
-                                        ) : order.customer?.address ? (
-                                            <span className="text-gray-700">{order.customer.address}</span>
                                         ) : (
                                             <span className="text-gray-400 italic">주소 미입력</span>
                                         )}

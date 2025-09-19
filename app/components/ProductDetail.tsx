@@ -233,16 +233,20 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products, productId, addO
                 </div>
 
                 <div className="mb-6">
-                    <label htmlFor="customerAddress" className="block text-gray-700 font-semibold mb-2">주소 <span className="text-gray-500 text-sm">(선택사항)</span></label>
+                    <label htmlFor="customerAddress" className="block text-gray-700 font-semibold mb-2">
+                        배송 주소 <span className="text-gray-500 text-sm">(선택사항)</span>
+                    </label>
                     <textarea
                         id="customerAddress"
                         value={customerAddress}
                         onChange={(e) => setCustomerAddress(e.target.value)}
                         rows={3}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        placeholder="배송 받으실 주소를 입력해주세요 (선택사항)"
+                        placeholder="이 주문의 배송받을 주소를 입력해주세요&#10;예: 경기도 구리시 인창동 123-45 아파트 101동 203호"
                     />
-                    <p className="text-gray-500 text-sm mt-1">주소를 입력하시면 배송 시 참고하겠습니다.</p>
+                    <p className="text-gray-500 text-sm mt-1">
+                        💡 여러 주문 시 각각 다른 배송지로 받으실 수 있습니다.
+                    </p>
                 </div>
 
                 {/* 입금 계좌 정보 */}
