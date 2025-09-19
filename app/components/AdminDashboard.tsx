@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import type { Product, OrderWithProduct, PaymentStatus, DeliveryStatus } from '../../types';
 import AddProduct from './AddProduct';
 import EditProduct from './EditProduct';
+import EditOrder from './EditOrder';
 
 interface AdminDashboardProps {
   products: Product[];
@@ -22,6 +23,13 @@ interface AdminDashboardProps {
   }) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   updateOrderStatus: (orderId: string, statusType: 'payment' | 'delivery', newStatus: PaymentStatus | DeliveryStatus) => Promise<void>;
+  deleteOrder: (orderId: string) => Promise<void>;
+  updateOrder: (orderId: string, orderData: {
+    quantity?: number
+    deliveryAddress?: string
+    customerName?: string
+    customerPhone?: string
+  }) => Promise<void>;
   showLoading: (show: boolean, message?: string) => void;
 }
 
@@ -38,10 +46,11 @@ const StatusBadge: React.FC<{ status: PaymentStatus | DeliveryStatus }> = ({ sta
 };
 
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addProduct, updateProduct, deleteProduct, updateOrderStatus, showLoading }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addProduct, updateProduct, deleteProduct, updateOrderStatus, deleteOrder, updateOrder, showLoading }) => {
   const [activeTab, setActiveTab] = useState('orders');
   const [orderSearchTerm, setOrderSearchTerm] = useState('');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingOrder, setEditingOrder] = useState<OrderWithProduct | null>(null);
 
   const getKoreanStatus = (status: string, type: 'payment' | 'delivery') => {
     if (type === 'payment') {
@@ -89,6 +98,39 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
     }
   };
 
+  const handleDeleteOrder = async (orderId: string, customerName: string, productName: string) => {
+    if (window.confirm(`'${customerName}'님의 '${productName}' 주문을 정말 취소하시겠습니까?`)) {
+      showLoading(true, '주문을 취소하고 있습니다...');
+      try {
+        await deleteOrder(orderId);
+      } catch (error) {
+        console.error('Failed to delete order:', error);
+        alert('주문 취소 중 오류가 발생했습니다.');
+      } finally {
+        showLoading(false);
+      }
+    }
+  };
+
+  const handleEditOrder = (order: OrderWithProduct) => {
+    setEditingOrder(order);
+  };
+
+  const handleUpdateOrder = async (orderData: { quantity: number; deliveryAddress: string; customerName: string; customerPhone: string }) => {
+    if (!editingOrder) return;
+
+    showLoading(true, '주문을 수정하고 있습니다...');
+    try {
+      await updateOrder(editingOrder.id, orderData);
+      setEditingOrder(null);
+    } catch (error) {
+      console.error('Failed to update order:', error);
+      alert('주문 수정 중 오류가 발생했습니다.');
+    } finally {
+      showLoading(false);
+    }
+  };
+
   const filteredOrders = useMemo(() => {
     if (!orderSearchTerm.trim()) {
         return orders;
@@ -109,6 +151,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
           product={editingProduct}
           updateProduct={updateProduct}
           onCancel={() => setEditingProduct(null)}
+          showLoading={showLoading}
+        />
+      )}
+
+      {editingOrder && (
+        <EditOrder
+          order={editingOrder}
+          updateOrder={handleUpdateOrder}
+          onCancel={() => setEditingOrder(null)}
           showLoading={showLoading}
         />
       )}
@@ -193,8 +244,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                         <tr>
                             <th className="px-6 py-3 text-left text-sm font-bold text-gray-600 uppercase tracking-wider">주문정보</th>
                             <th className="px-6 py-3 text-left text-sm font-bold text-gray-600 uppercase tracking-wider">신청자</th>
+                            <th className="px-6 py-3 text-left text-sm font-bold text-gray-600 uppercase tracking-wider">배송주소</th>
                             <th className="px-6 py-3 text-left text-sm font-bold text-gray-600 uppercase tracking-wider">결제 상태</th>
                             <th className="px-6 py-3 text-left text-sm font-bold text-gray-600 uppercase tracking-wider">배송 상태</th>
+                            <th className="px-6 py-3 text-left text-sm font-bold text-gray-600 uppercase tracking-wider">관리</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -216,6 +269,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                                     <div>{order.customerName}</div>
                                     <div className="text-sm text-gray-500">{order.customerPhone}</div>
                                 </td>
+                                <td className="px-6 py-4 text-base text-gray-800 max-w-xs">
+                                    <div className="text-sm">
+                                        {order.deliveryAddress ? (
+                                            <span className="text-gray-700">{order.deliveryAddress}</span>
+                                        ) : order.customer?.address ? (
+                                            <span className="text-gray-700">{order.customer.address}</span>
+                                        ) : (
+                                            <span className="text-gray-400 italic">주소 미입력</span>
+                                        )}
+                                    </div>
+                                </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <StatusBadge status={getKoreanStatus(order.paymentStatus, 'payment') as PaymentStatus} />
                                     {order.paymentStatus === 'PENDING' && (
@@ -231,6 +295,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, orders, addPr
                                             배송 완료 처리
                                         </button>
                                     )}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <div className="flex flex-col space-y-2">
+                                        <button
+                                            onClick={() => handleEditOrder(order)}
+                                            className="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded text-xs font-bold"
+                                        >
+                                            수정
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteOrder(order.id, order.customerName, order.product.name)}
+                                            className="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-2 py-1 rounded text-xs font-bold"
+                                        >
+                                            취소
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}

@@ -59,6 +59,7 @@ model Order {
   quantity       Int
   customerName   String        // 호환성을 위해 유지
   customerPhone  String        // 호환성을 위해 유지
+  deliveryAddress String?      // 배송 주소
   orderDate      DateTime      @default(now())
   paymentStatus  PaymentStatus @default(PENDING)
   deliveryStatus DeliveryStatus @default(PREPARING)

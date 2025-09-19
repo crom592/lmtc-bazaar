@@ -93,6 +93,7 @@ export async function POST(request: NextRequest) {
         quantity: parseInt(quantity),
         customerName, // 호환성을 위해 유지
         customerPhone, // 호환성을 위해 유지
+        deliveryAddress: customerAddress, // 배송 주소 저장
       },
       include: {
         product: {

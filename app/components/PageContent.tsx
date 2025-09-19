@@ -157,7 +157,7 @@ export default function PageContent() {
     newStatus: PaymentStatus | DeliveryStatus
   ) => {
     try {
-      const updateData = statusType === 'payment' 
+      const updateData = statusType === 'payment'
         ? { paymentStatus: newStatus }
         : { deliveryStatus: newStatus }
 
@@ -170,13 +170,55 @@ export default function PageContent() {
       if (!response.ok) throw new Error('주문 상태 업데이트 실패')
 
       const updatedOrder = await response.json()
-      setOrders(prev => 
-        prev.map(order => 
+      setOrders(prev =>
+        prev.map(order =>
           order.id === orderId ? updatedOrder : order
         )
       )
     } catch (error) {
       console.error('주문 상태 업데이트 오류:', error)
+      throw error
+    }
+  }
+
+  const deleteOrder = async (orderId: string) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) throw new Error('주문 취소 실패')
+
+      setOrders(prev => prev.filter(order => order.id !== orderId))
+    } catch (error) {
+      console.error('주문 취소 오류:', error)
+      throw error
+    }
+  }
+
+  const updateOrder = async (orderId: string, orderData: {
+    quantity?: number
+    deliveryAddress?: string
+    customerName?: string
+    customerPhone?: string
+  }) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      })
+
+      if (!response.ok) throw new Error('주문 수정 실패')
+
+      const updatedOrder = await response.json()
+      setOrders(prev =>
+        prev.map(order =>
+          order.id === orderId ? updatedOrder : order
+        )
+      )
+    } catch (error) {
+      console.error('주문 수정 오류:', error)
       throw error
     }
   }
@@ -201,6 +243,8 @@ export default function PageContent() {
           updateProduct={updateProduct}
           deleteProduct={deleteProduct}
           updateOrderStatus={updateOrderStatus}
+          deleteOrder={deleteOrder}
+          updateOrder={updateOrder}
           showLoading={showLoading}
         />
       ) : (
@@ -217,6 +261,8 @@ export default function PageContent() {
           updateProduct={updateProduct}
           deleteProduct={deleteProduct}
           updateOrderStatus={updateOrderStatus}
+          deleteOrder={deleteOrder}
+          updateOrder={updateOrder}
           showLoading={showLoading}
         />
       )
